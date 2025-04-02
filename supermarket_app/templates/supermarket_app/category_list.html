@@ -1,0 +1,25 @@
+{% extends "supermarket_app/base.html" %}
+
+{% block title %}{{ page_title }} - Супермаркет{% endblock %}
+
+{% block content %}
+
+{% if categories %}
+    <div class="list-group">
+        {% for category in categories %}
+            <a href="{% url 'supermarket_app:category_product_list' category_id=category.id %}" class="list-group-item list-group-item-action">
+                {{ category.name }}
+                {# <span class="badge bg-primary rounded-pill">{{ category.products.count }}</span> #} {# Счетчик товаров (может быть неэффективным) #}
+            </a>
+        {% endfor %}
+    </div>
+
+    {% include "supermarket_app/_pagination.html" %}
+
+{% else %}
+    <div class="alert alert-info" role="alert">
+        Категории еще не добавлены.
+    </div>
+{% endif %}
+
+{% endblock %}

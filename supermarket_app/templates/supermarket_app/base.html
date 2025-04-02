@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Супермаркет{% endblock %}</title>
+    <!-- Подключите CSS фреймворк (например, Bootstrap) или свои стили -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding-top: 60px; } /* Отступ для фиксированного навбара */
+        .footer {
+            padding: 1rem 0;
+            margin-top: 2rem;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'supermarket_app:product_list' %}">Супермаркет "У Дома"</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.view_name == 'supermarket_app:product_list' %}active{% endif %}" href="{% url 'supermarket_app:product_list' %}">Товары</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.view_name == 'supermarket_app:category_list' %}active{% endif %}" href="{% url 'supermarket_app:category_list' %}">Категории</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/" target="_blank">Админ-панель</a>
+                    </li>
+                    <!-- Добавьте другие ссылки по необходимости -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4">
+        <h1>{% block page_title %}{{ page_title|default:"Супермаркет" }}{% endblock %}</h1>
+        <hr>
+        {% block content %}
+        <!-- Содержимое страницы будет здесь -->
+        {% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <span class="text-muted">© {% now "Y" %} Супермаркет "У Дома". Все права защищены.</span>
+        </div>
+    </footer>
+
+    <!-- Подключите JS (например, для Bootstrap) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}
+    <!-- Дополнительные скрипты для конкретных страниц -->
+    {% endblock %}
+</body>
+</html>

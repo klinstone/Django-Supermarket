@@ -1,0 +1,75 @@
+{% extends "supermarket_app/base.html" %}
+
+{% block title %}{{ page_title }} - Супермаркет{% endblock %}
+
+{% block content %}
+
+<div class="row mb-3">
+    <div class="col-md-4">
+        <form method="get">
+            <label for="categoryFilter" class="form-label">Фильтр по категории:</label>
+            <select name="category" id="categoryFilter" class="form-select" onchange="this.form.submit()">
+                <option value="">Все категории</option>
+                {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if cat.id == request.GET.category|add:0 or cat.id == current_category_id %}selected{% endif %}>
+                        {{ cat.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+     {% if category %}
+        <div class="col-md-8 align-self-end text-md-end">
+             <a href="{% url 'supermarket_app:product_list' %}" class="btn btn-outline-secondary btn-sm">Сбросить фильтр</a>
+        </div>
+     {% endif %}
+</div>
+
+
+{% if products %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for product in products %}
+            <div class="col">
+                <div class="card h-100">
+                    {# <img src="..." class="card-img-top" alt="{{ product.name }}"> #}
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{% url 'supermarket_app:product_detail' pk=product.pk %}">{{ product.name }}</a>
+                        </h5>
+                        <p class="card-text text-muted">{{ product.category.name }}</p>
+                        {% with current_price=product.get_current_price %}
+                            {% if current_price %}
+                                <p class="card-text fs-5"><strong>{{ current_price }} руб.</strong></p>
+                            {% else %}
+                                <p class="card-text text-danger">Цена не установлена</p>
+                            {% endif %}
+                        {% endwith %}
+                        {# <p class="card-text"><small class="text-muted">{{ product.description|truncatewords:15 }}</small></p> #}
+                    </div>
+                    <div class="card-footer">
+                         <a href="{% url 'supermarket_app:product_detail' pk=product.pk %}" class="btn btn-primary btn-sm">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% include "supermarket_app/_pagination.html" %} {# Подключаем пагинацию #}
+
+{% else %}
+    <div class="alert alert-info" role="alert">
+        {% if category %}
+            В категории "{{ category.name }}" пока нет товаров.
+        {% else %}
+            Товары не найдены.
+        {% endif %}
+    </div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Можно добавить JS для улучшения UX фильтра, если нужно
+</script>
+{% endblock %}

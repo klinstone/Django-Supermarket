@@ -1,0 +1,60 @@
+{% extends "supermarket_app/base.html" %}
+{% load l10n %} {# Для форматирования дат/чисел #}
+
+{% block title %}{{ product.name }} - Супермаркет{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-8">
+{#         {% if product.image %}#}
+{#            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid mb-3">#}
+{#        {% endif %} #}
+
+        <h2>{{ product.name }}</h2>
+        <p class="text-muted">Категория: <a href="{% url 'supermarket_app:category_product_list' category_id=product.category.id %}">{{ product.category.name }}</a></p>
+
+        {% if current_price %}
+            <p class="fs-3"><strong>{{ current_price }} руб.</strong></p>
+        {% else %}
+            <p class="fs-3 text-danger">Цена не установлена</p>
+        {% endif %}
+
+        {% if product.description %}
+            <h4>Описание</h4>
+            <p>{{ product.description|linebreaks }}</p>
+        {% endif %}
+
+        {% if product.transport_companies.all %}
+            <h4>Поставщики</h4>
+            <ul>
+                {% for company in product.transport_companies.all %}
+                    <li>{{ company.name }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    </div>
+    <div class="col-md-4">
+        <h4>История цен</h4>
+        {% if price_history %}
+            <ul class="list-group">
+                {% for price in price_history %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ price.value }} руб.
+                        <span class="badge bg-secondary rounded-pill">{{ price.start_date|date:"d.m.Y H:i" }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>История цен отсутствует.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-4">
+     <a href="{{ request.META.HTTP_REFERER|default:request.build_absolute_uri }}" class="btn btn-secondary">Назад</a>
+     {# <a href="{% url 'supermarket_app:product_list' %}" class="btn btn-secondary">Назад к списку</a> #}
+</div>
+
+{% endblock %}
